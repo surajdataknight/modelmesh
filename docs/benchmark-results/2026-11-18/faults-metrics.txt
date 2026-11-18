@@ -1,0 +1,8 @@
+modelmesh_requests_total{model="fast",outcome="interrupted"} 125
+modelmesh_requests_total{model="fast",outcome="success"} 3875
+modelmesh_upstream_attempts_total{provider="mock-a",result="error_503"} 820
+modelmesh_upstream_attempts_total{provider="mock-a",result="stream_interrupted"} 125
+modelmesh_upstream_attempts_total{provider="mock-a",result="success"} 3055
+modelmesh_upstream_attempts_total{provider="mock-b",result="success"} 820
+modelmesh_failovers_total{model="fast"} 820
+modelmesh_breaker_transitions_total{provider="mock-a",to="open"} 1

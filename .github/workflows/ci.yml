@@ -1,0 +1,21 @@
+# Runs on standard GitHub-hosted runners, which GitHub documents as free for
+# public repositories. Do not switch to "larger runners": those are billed
+# even on public repositories. Local equivalent: make ci
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ["1.24.x", "stable"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - run: make lint
+      - run: make race
+      - run: make build

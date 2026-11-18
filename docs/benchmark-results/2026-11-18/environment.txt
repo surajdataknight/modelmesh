@@ -1,0 +1,4 @@
+host: Linux 6.18.44-fc-v595 x86_64, 2 CPUs, Intel(R) Xeon(R) Processor @ 2.10GHz
+go: go version go1.24.7 linux/amd64
+placement: gateway on CPU 1; mocks + loadgen on CPUs 0-0
+date: 2026-11-18T10:48:22+05:30

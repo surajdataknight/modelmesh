@@ -1,0 +1,42 @@
+host: Linux 6.18.44-fc-v595 x86_64, 2 CPUs, Intel(R) Xeon(R) Processor @ 2.10GHz
+go: go version go1.24.7 linux/amd64
+placement: gateway on CPU 1; mocks + loadgen on CPUs 0-0
+date: 2026-11-18T10:48:22+05:30
+== overhead: 64-token streams, instant mock (isolates gateway cost)
+  direct-200: ok=3000/3000 success=100% ttft p50=0.969ms p99=1.516ms total p99=1.667ms errors={}
+  gateway-200: ok=3000/3000 success=100% ttft p50=1.175ms p99=2.68ms total p99=3.227ms errors={}
+    gateway: cpu=1.54s total, 0.5133333333333333ms per ok request; peak_rss=15.0MB peak_goroutines=14
+  direct-500: ok=7500/7500 success=100% ttft p50=0.88ms p99=1.604ms total p99=1.747ms errors={}
+  gateway-500: ok=7500/7500 success=100% ttft p50=1.063ms p99=3.036ms total p99=3.324ms errors={}
+    gateway: cpu=3.54s total, 0.472ms per ok request; peak_rss=15.1MB peak_goroutines=19
+  direct-1000: ok=15000/15000 success=100% ttft p50=0.808ms p99=1.907ms total p99=2.13ms errors={}
+  gateway-1000: ok=15000/15000 success=100% ttft p50=1.004ms p99=4.995ms total p99=5.496ms errors={}
+    gateway: cpu=6.39s total, 0.426ms per ok request; peak_rss=15.5MB peak_goroutines=39
+== concurrency: realistic streams (TTFT 200-300ms, 50 tok/s, 100 tokens => ~2.3s each)
+  conc-direct-250: ok=5000/5000 success=100% ttft p50=251.339ms p99=300.932ms total p99=2358.546ms errors={}
+  conc-gateway-250: ok=5000/5000 success=100% ttft p50=253.026ms p99=301.839ms total p99=2362.977ms errors={}
+    gateway: cpu=10.48s total, 2.096ms per ok request; peak_rss=75.2MB peak_goroutines=2341
+  conc-direct-500: ok=10000/10000 success=100% ttft p50=253.476ms p99=304.298ms total p99=2406.919ms errors={}
+  conc-gateway-500: ok=10000/10000 success=100% ttft p50=258.833ms p99=321.375ms total p99=2470.867ms errors={}
+    gateway: cpu=16.26s total, 1.6260000000000001ms per ok request; peak_rss=144.4MB peak_goroutines=4861
+== many open streams: 10s streams at 10 tok/s, 400 new/s => ~4,000 concurrent
+  many-direct: ok=6000/6000 success=100% ttft p50=52.402ms p99=132.926ms total p99=10331.015ms errors={}
+  many-gateway: ok=6000/6000 success=100% ttft p50=54.248ms p99=126.613ms total p99=10275.344ms errors={}
+    gateway: cpu=14.57s total, 2.4283333333333332ms per ok request; peak_rss=335.0MB peak_goroutines=16264
+== faults: mock-a returns 503 for 20% of requests and breaks 4% of streams mid-way (cut/stall); mock-b healthy
+  faults-direct-a: ok=3086/4000 success=77% ttft p50=51.278ms p99=52.509ms total p99=338.535ms errors={"client_timeout":62,"connection_cut":52,"http_503":800}
+  faults-gateway-failover: ok=3875/4000 success=96% ttft p50=51.672ms p99=54.914ms total p99=333.139ms errors={"stream_error_upstream_interrupted":57,"stream_error_upstream_stalled":68}
+    gateway: cpu=5.48s total, 1.4141935483870969ms per ok request; peak_rss=24.2MB peak_goroutines=395
+== breaker: mock-a is a black hole (never answers); first_token timeout is 2s
+  breaker-disabled: ok=1000/1000 success=100% ttft p50=2052.282ms p99=2054.805ms total p99=2163.488ms errors={}
+    gateway: cpu=1.88s total, 1.88ms per ok request; peak_rss=23.4MB peak_goroutines=445
+  breaker-enabled: ok=1000/1000 success=100% ttft p50=51.787ms p99=2053.615ms total p99=2161.827ms errors={}
+    gateway: cpu=1.56s total, 1.56ms per ok request; peak_rss=20.6MB peak_goroutines=433
+== cancellation: clients disconnect after 300ms from 10s streams
+  cancel-gateway: ok=0/4500 success=0% ttft p50=0ms p99=0ms total p99=0ms errors={}
+    gateway: cpu=3.49s total, n/ams per ok request; peak_rss=21.9MB peak_goroutines=371
+    goroutines before=7 after=7; mock-a active upstream requests after=0
+== load shedding: 4,000 concurrent 10s streams offered to a gateway limited to 1,000
+  shed-gateway: ok=1000/4000 success=25% ttft p50=52.043ms p99=72.043ms total p99=10047.208ms errors={"http_503":3000}
+    gateway: cpu=3.34s total, 3.34ms per ok request; peak_rss=97.2MB peak_goroutines=4014
+results: bench-results/20261118-104821

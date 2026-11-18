@@ -1,0 +1,13 @@
+{
+  "listen": "0.0.0.0:8080",
+  "admin_listen": "0.0.0.0:9090",
+  "auth": { "mode": "api_keys", "keys_env": "MODELMESH_API_KEYS" },
+  "timeouts": { "first_token": "10s", "idle": "15s" },
+  "providers": [
+    { "name": "mock-a", "base_url": "http://mock-a:9001/v1" },
+    { "name": "mock-b", "base_url": "http://mock-b:9002/v1" }
+  ],
+  "models": [
+    { "name": "fast", "targets": [ { "provider": "mock-a", "model": "mock-small" }, { "provider": "mock-b", "model": "mock-small" } ] }
+  ]
+}

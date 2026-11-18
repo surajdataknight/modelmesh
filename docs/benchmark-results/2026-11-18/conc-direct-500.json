@@ -1,0 +1,44 @@
+{
+  "label": "conc-direct-500",
+  "url": "http://127.0.0.1:9001/v1/chat/completions",
+  "model": "mock-small",
+  "stream": true,
+  "target_rps": 500,
+  "scheduled": 10000,
+  "dropped": 0,
+  "completed_ok": 10000,
+  "cancelled_as_intended": 0,
+  "errors": {},
+  "success_rate": 1,
+  "achieved_ok_rps": 447.76123028514445,
+  "schedule_overrun_ms": -1.141832,
+  "wall_seconds": 22.333331525,
+  "ttft": {
+    "p50_ms": 253.476,
+    "p90_ms": 293.458,
+    "p95_ms": 298.489,
+    "p99_ms": 304.298,
+    "p99_9_ms": 324.337,
+    "max_ms": 337.853,
+    "mean_ms": 253.661
+  },
+  "total": {
+    "p50_ms": 2328.138,
+    "p90_ms": 2372.569,
+    "p95_ms": 2384.683,
+    "p99_ms": 2406.919,
+    "p99_9_ms": 2435.822,
+    "max_ms": 2444.799,
+    "mean_ms": 2328.233
+  },
+  "max_inter_chunk_gap": {
+    "p50_ms": 30.418,
+    "p90_ms": 47.269,
+    "p95_ms": 53.37,
+    "p99_ms": 59.435,
+    "p99_9_ms": 61.958,
+    "max_ms": 62.043,
+    "mean_ms": 32.753
+  },
+  "mean_chunks_per_stream": 102
+}

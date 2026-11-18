@@ -1,0 +1,37 @@
+{
+  "listen": "127.0.0.1:8080",
+  "admin_listen": "127.0.0.1:9090",
+  "log_level": "info",
+  "auth": { "mode": "api_keys", "keys_env": "MODELMESH_API_KEYS" },
+  "limits": {
+    "max_concurrent_requests": 2048,
+    "per_key_rps": 0
+  },
+  "timeouts": {
+    "request": "5m",
+    "first_token": "10s",
+    "idle": "15s",
+    "attempt": "60s",
+    "client_write": "10s",
+    "shutdown_grace": "20s"
+  },
+  "retry": { "max_attempts": 3, "base_backoff": "100ms", "max_backoff": "2s", "budget_ratio": 0.2 },
+  "breaker": { "failure_threshold": 5, "open_duration": "10s", "half_open_probes": 1 },
+  "providers": [
+    { "name": "mock-a", "base_url": "http://127.0.0.1:9001/v1", "max_concurrent": 1024 },
+    { "name": "mock-b", "base_url": "http://127.0.0.1:9002/v1", "max_concurrent": 1024 }
+  ],
+  "models": [
+    {
+      "name": "fast",
+      "targets": [
+        { "provider": "mock-a", "model": "mock-small" },
+        { "provider": "mock-b", "model": "mock-small" }
+      ]
+    },
+    {
+      "name": "single",
+      "targets": [ { "provider": "mock-a", "model": "mock-large" } ]
+    }
+  ]
+}

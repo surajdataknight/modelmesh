@@ -1,0 +1,48 @@
+{
+  "label": "breaker-enabled",
+  "url": "http://127.0.0.1:8080/v1/chat/completions",
+  "model": "fast",
+  "stream": true,
+  "target_rps": 50,
+  "scheduled": 1000,
+  "dropped": 0,
+  "completed_ok": 1000,
+  "cancelled_as_intended": 0,
+  "errors": {},
+  "success_rate": 1,
+  "achieved_ok_rps": 49.6628710616444,
+  "schedule_overrun_ms": -18.934684,
+  "wall_seconds": 20.135766995,
+  "ttft": {
+    "p50_ms": 51.787,
+    "p90_ms": 2051.606,
+    "p95_ms": 2052.673,
+    "p99_ms": 2053.615,
+    "p99_9_ms": 2054.915,
+    "max_ms": 2056.818,
+    "mean_ms": 265.85
+  },
+  "total": {
+    "p50_ms": 158.403,
+    "p90_ms": 2156.218,
+    "p95_ms": 2159.603,
+    "p99_ms": 2161.827,
+    "p99_9_ms": 2164.506,
+    "max_ms": 2165.593,
+    "mean_ms": 372.299
+  },
+  "max_inter_chunk_gap": {
+    "p50_ms": 6.13,
+    "p90_ms": 7.703,
+    "p95_ms": 8.697,
+    "p99_ms": 10.458,
+    "p99_9_ms": 11.662,
+    "max_ms": 11.679,
+    "mean_ms": 6.554
+  },
+  "mean_chunks_per_stream": 22,
+  "gateway_cpu_seconds": 1.56,
+  "gateway_peak_rss_mb": 20.6,
+  "gateway_peak_goroutines": 433,
+  "gateway_cpu_ms_per_ok_request": 1.56
+}

@@ -1,0 +1,50 @@
+{
+  "label": "shed-gateway",
+  "url": "http://127.0.0.1:8080/v1/chat/completions",
+  "model": "a-only",
+  "stream": true,
+  "target_rps": 400,
+  "scheduled": 4000,
+  "dropped": 0,
+  "completed_ok": 1000,
+  "cancelled_as_intended": 0,
+  "errors": {
+    "http_503": 3000
+  },
+  "success_rate": 0.25,
+  "achieved_ok_rps": 79.91204188312413,
+  "schedule_overrun_ms": -2.252013,
+  "wall_seconds": 12.513758583,
+  "ttft": {
+    "p50_ms": 52.043,
+    "p90_ms": 54.149,
+    "p95_ms": 58.762,
+    "p99_ms": 72.043,
+    "p99_9_ms": 83.741,
+    "max_ms": 86.156,
+    "mean_ms": 52.957
+  },
+  "total": {
+    "p50_ms": 10021.43,
+    "p90_ms": 10030.014,
+    "p95_ms": 10033.42,
+    "p99_ms": 10047.208,
+    "p99_9_ms": 10058.993,
+    "max_ms": 10061.051,
+    "mean_ms": 10022.246
+  },
+  "max_inter_chunk_gap": {
+    "p50_ms": 104.442,
+    "p90_ms": 111.85,
+    "p95_ms": 114.449,
+    "p99_ms": 118.278,
+    "p99_9_ms": 120.187,
+    "max_ms": 120.21,
+    "mean_ms": 105.87
+  },
+  "mean_chunks_per_stream": 102,
+  "gateway_cpu_seconds": 3.34,
+  "gateway_peak_rss_mb": 97.2,
+  "gateway_peak_goroutines": 4014,
+  "gateway_cpu_ms_per_ok_request": 3.34
+}
