@@ -1,0 +1,24 @@
+BenchmarkReaderNext-2   	   33825	     34680 ns/op	5132.59 MB/s	        34.68 ns/event	       0 B/op	       0 allocs/op
+BenchmarkReaderNext-2   	   33819	     34750 ns/op	5122.33 MB/s	        34.75 ns/event	       0 B/op	       0 allocs/op
+BenchmarkReaderNext-2   	   32857	     35243 ns/op	5050.72 MB/s	        35.24 ns/event	       0 B/op	       0 allocs/op
+BenchmarkInspectChunk-2   	 1930274	       621.0 ns/op	       0 B/op	       0 allocs/op
+BenchmarkInspectChunk-2   	 1916317	       573.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkInspectChunk-2   	 1958122	       600.2 ns/op	       0 B/op	       0 allocs/op
+BenchmarkStream64Direct-2               	    5958	    179881 ns/op	    9440 B/op	     119 allocs/op
+BenchmarkStream64Direct-2               	    8848	    178064 ns/op	    9440 B/op	     119 allocs/op
+BenchmarkStream64Direct-2               	    5803	    188391 ns/op	    9442 B/op	     118 allocs/op
+BenchmarkStream64ViaGateway-2           	    3394	    334625 ns/op	   26257 B/op	     365 allocs/op
+BenchmarkStream64ViaGateway-2           	    3441	    377603 ns/op	   26262 B/op	     365 allocs/op
+BenchmarkStream64ViaGateway-2           	    3648	    368290 ns/op	   26243 B/op	     365 allocs/op
+BenchmarkNonStreamDirect-2              	   36992	     35077 ns/op	   11697 B/op	     156 allocs/op
+BenchmarkNonStreamDirect-2              	   33787	     36313 ns/op	   11701 B/op	     156 allocs/op
+BenchmarkNonStreamDirect-2              	   34612	     37485 ns/op	   11691 B/op	     156 allocs/op
+BenchmarkNonStreamViaGateway-2          	   10000	    101175 ns/op	   28067 B/op	     360 allocs/op
+BenchmarkNonStreamViaGateway-2          	   10000	    112732 ns/op	   28077 B/op	     360 allocs/op
+BenchmarkNonStreamViaGateway-2          	   11079	    110331 ns/op	   28075 B/op	     360 allocs/op
+BenchmarkStream64DirectParallel-2       	   10000	    121106 ns/op	    9446 B/op	     119 allocs/op
+BenchmarkStream64DirectParallel-2       	    9577	    116424 ns/op	    9438 B/op	     118 allocs/op
+BenchmarkStream64DirectParallel-2       	   11634	    106398 ns/op	    9448 B/op	     119 allocs/op
+BenchmarkStream64ViaGatewayParallel-2   	    5625	    196207 ns/op	   26278 B/op	     365 allocs/op
+BenchmarkStream64ViaGatewayParallel-2   	    6838	    212248 ns/op	   26286 B/op	     366 allocs/op
+BenchmarkStream64ViaGatewayParallel-2   	    5419	    214415 ns/op	   26284 B/op	     365 allocs/op

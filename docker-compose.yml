@@ -1,0 +1,27 @@
+# Local stack: gateway + two fault-injectable mock providers. Free to run.
+#   MODELMESH_API_KEYS=dev:sk-dev-local-key docker compose up --build
+# Optional Prometheus (Apache-2.0): docker compose --profile observability up
+services:
+  mock-a:
+    build: .
+    entrypoint: ["/usr/local/bin/mockllm", "-listen", "0.0.0.0:9001", "-ttft", "150ms", "-tps", "40", "-tokens", "40"]
+    ports: ["127.0.0.1:9001:9001"]
+  mock-b:
+    build: .
+    entrypoint: ["/usr/local/bin/mockllm", "-listen", "0.0.0.0:9002", "-ttft", "150ms", "-tps", "40", "-tokens", "40"]
+    ports: ["127.0.0.1:9002:9002"]
+  gateway:
+    build: .
+    command: ["-config", "/etc/modelmesh/compose.json"]
+    environment:
+      MODELMESH_API_KEYS: ${MODELMESH_API_KEYS:-dev:sk-dev-local-key}
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:9090:9090"
+    depends_on: [mock-a, mock-b]
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["observability"]
+    volumes: ["./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
+    ports: ["127.0.0.1:9091:9090"]
+    depends_on: [gateway]

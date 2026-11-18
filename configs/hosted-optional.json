@@ -1,0 +1,25 @@
+{
+  "listen": "127.0.0.1:8080",
+  "admin_listen": "127.0.0.1:9090",
+  "auth": { "mode": "api_keys", "keys_env": "MODELMESH_API_KEYS" },
+  "providers": [
+    {
+      "name": "openai",
+      "base_url": "https://api.openai.com/v1",
+      "api_key_env": "OPENAI_API_KEY",
+      "max_concurrent": 64,
+      "price_per_1k_prompt": 0,
+      "price_per_1k_completion": 0
+    },
+    { "name": "mock-a", "base_url": "http://127.0.0.1:9001/v1" }
+  ],
+  "models": [
+    {
+      "name": "hosted",
+      "targets": [
+        { "provider": "openai", "model": "REPLACE-WITH-A-MODEL-YOU-HAVE-ACCESS-TO" },
+        { "provider": "mock-a", "model": "mock-small" }
+      ]
+    }
+  ]
+}

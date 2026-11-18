@@ -1,0 +1,51 @@
+{
+  "label": "cancel-gateway",
+  "url": "http://127.0.0.1:8080/v1/chat/completions",
+  "model": "a-only",
+  "stream": true,
+  "target_rps": 300,
+  "scheduled": 4500,
+  "dropped": 0,
+  "completed_ok": 0,
+  "cancelled_as_intended": 4500,
+  "errors": {},
+  "success_rate": 0,
+  "achieved_ok_rps": 0,
+  "schedule_overrun_ms": -2.785504,
+  "wall_seconds": 15.29823913,
+  "ttft": {
+    "p50_ms": 0,
+    "p90_ms": 0,
+    "p95_ms": 0,
+    "p99_ms": 0,
+    "p99_9_ms": 0,
+    "max_ms": 0,
+    "mean_ms": 0
+  },
+  "total": {
+    "p50_ms": 0,
+    "p90_ms": 0,
+    "p95_ms": 0,
+    "p99_ms": 0,
+    "p99_9_ms": 0,
+    "max_ms": 0,
+    "mean_ms": 0
+  },
+  "max_inter_chunk_gap": {
+    "p50_ms": 0,
+    "p90_ms": 0,
+    "p95_ms": 0,
+    "p99_ms": 0,
+    "p99_9_ms": 0,
+    "max_ms": 0,
+    "mean_ms": 0
+  },
+  "mean_chunks_per_stream": 0,
+  "gateway_cpu_seconds": 3.49,
+  "gateway_peak_rss_mb": 21.9,
+  "gateway_peak_goroutines": 371,
+  "gateway_cpu_ms_per_ok_request": null,
+  "goroutines_before": 7,
+  "goroutines_after": 7,
+  "upstream_active_after": 0
+}

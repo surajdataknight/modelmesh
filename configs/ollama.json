@@ -1,0 +1,19 @@
+{
+  "listen": "127.0.0.1:8080",
+  "admin_listen": "127.0.0.1:9090",
+  "auth": { "mode": "api_keys", "keys_env": "MODELMESH_API_KEYS" },
+  "timeouts": { "first_token": "120s", "idle": "60s", "attempt": "5m" },
+  "providers": [
+    { "name": "ollama", "base_url": "http://127.0.0.1:11434/v1", "max_concurrent": 4 },
+    { "name": "mock-a", "base_url": "http://127.0.0.1:9001/v1" }
+  ],
+  "models": [
+    {
+      "name": "local",
+      "targets": [
+        { "provider": "ollama", "model": "llama3.2:1b" },
+        { "provider": "mock-a", "model": "mock-small" }
+      ]
+    }
+  ]
+}
