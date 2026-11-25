@@ -315,6 +315,23 @@ func TestNonStreamBrokenResponsesFailOver(t *testing.T) {
 	}
 }
 
+func TestEarlyStreamStallUsesIdleTimeout(t *testing.T) {
+	h := newHarness(t, []mockSpec{{"a", func(p *mock.Profile) {
+		p.FaultAfterTokens = 1
+		p.StallRate = 1
+	}}}, func(c *config.Config) {
+		c.Timeouts.FirstToken = config.Duration(10 * time.Second)
+		c.Timeouts.Idle = config.Duration(100 * time.Millisecond)
+	})
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	resp := h.post(ctx, chatBody("a-only", true, ""))
+	r := readStream(resp)
+	if r.content != 1 || r.errEv == nil || r.errEv.Code != "upstream_stalled" {
+		t.Fatalf("expected one chunk followed by an idle timeout, got %+v", r)
+	}
+}
+
 func TestMidStreamFaultsAreReportedInBandAndNotRetried(t *testing.T) {
 	cases := []struct {
 		name string

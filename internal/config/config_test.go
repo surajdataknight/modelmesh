@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -115,7 +116,11 @@ func TestKeysFile(t *testing.T) {
 	if err := os.WriteFile(path, []byte("# team keys\nweb:sk-web-local-key\n\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	raw := strings.Replace(minimal, "{", `{"auth": {"keys_file": "`+path+`"},`, 1)
+	encodedPath, err := json.Marshal(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw := strings.Replace(minimal, "{", `{"auth": {"keys_file": `+string(encodedPath)+`},`, 1)
 	cfg, err := Parse([]byte(raw), env(nil))
 	if err != nil {
 		t.Fatalf("Parse: %v", err)

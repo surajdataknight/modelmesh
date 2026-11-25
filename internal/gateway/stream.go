@@ -262,7 +262,9 @@ func (c *clientWriter) errorEvent(typ, code, msg string) {
 //
 // Rather than resetting a timer for every event (hot path), kick() only
 // records the time; when the timer fires it checks whether the deadline
-// actually passed and re-arms itself otherwise.
+// actually passed and re-arms itself otherwise. The first event is the one
+// exception: it re-arms the timer for the idle window, which can be much
+// shorter than the first-token window.
 type watchdog struct {
 	mu      sync.Mutex
 	timer   *time.Timer
@@ -285,8 +287,14 @@ func startWatchdog(first, idle time.Duration, cancel context.CancelCauseFunc) *w
 
 func (w *watchdog) kick() {
 	w.last.Store(time.Now().UnixNano())
-	if !w.started.Load() {
+	if w.started.Load() {
+		return
+	}
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	if !w.stopped && !w.started.Load() {
 		w.started.Store(true)
+		w.timer.Reset(w.idle)
 	}
 }
 
@@ -305,6 +313,7 @@ func (w *watchdog) fire() {
 		w.timer.Reset(remaining)
 		return
 	}
+	w.stopped = true
 	w.cancel(cause)
 }
 

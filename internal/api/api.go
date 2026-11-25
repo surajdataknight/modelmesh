@@ -145,11 +145,11 @@ func (r *ChatRequest) UpstreamBody(upstreamModel string) ([]byte, error) {
 
 // ChunkInfo is what the gateway learns from one streamed chunk.
 type ChunkInfo struct {
-	Valid      bool   // payload is syntactically valid JSON
+	Valid      bool   // payload is a valid, non-empty JSON object
 	HasContent bool   // carries a non-empty delta content (used to estimate tokens)
 	UsageOnly  bool   // the final usage chunk with no choices
 	Usage      *Usage // non-nil when the chunk reports usage
-	ErrorBody  bool   // the provider sent an error object in-band
+	ErrorBody  bool   // the provider sent an error in-band
 }
 
 var (
@@ -159,17 +159,20 @@ var (
 )
 
 // InspectChunk extracts accounting and error information from one OpenAI
-// stream chunk. The fast path (ordinary content chunk) performs a validity
-// scan plus a few byte searches and does not decode the JSON.
+// stream chunk. Any valid, non-empty JSON object is accepted, because
+// providers add their own chunks (empty choices, choices without a delta,
+// usage without choices) that clients expect to receive. The fast path
+// (ordinary content chunk) performs a validity scan plus a few byte
+// searches and does not decode the JSON.
 func InspectChunk(p []byte) ChunkInfo {
-	info := ChunkInfo{Valid: json.Valid(p)}
+	info := ChunkInfo{Valid: isNonEmptyObject(p) && json.Valid(p)}
 	if !info.Valid {
 		return info
 	}
 	info.HasContent = valueIsNonEmptyString(p, keyContent)
-	usageObj := valueIsObject(p, keyUsage)
-	errObj := valueIsObject(p, keyError)
-	if !usageObj && !errObj {
+	hasUsage := valueStartsWith(p, keyUsage, '{')
+	hasError := valueStartsWith(p, keyError, '{', '"')
+	if !hasUsage && !hasError {
 		return info
 	}
 	var c struct {
@@ -187,10 +190,21 @@ func InspectChunk(p []byte) ChunkInfo {
 	return info
 }
 
-// valueIsObject reports whether some occurrence of key is followed by ':'
-// and an object. It is a heuristic pre-filter; a positive result is always
-// confirmed by a real decode.
-func valueIsObject(p, key []byte) bool {
+// isNonEmptyObject reports whether p starts like a JSON object with at least
+// one member. json.Valid checks the rest.
+func isNonEmptyObject(p []byte) bool {
+	i := skipWS(p, 0)
+	if i >= len(p) || p[i] != '{' {
+		return false
+	}
+	i = skipWS(p, i+1)
+	return i < len(p) && p[i] != '}'
+}
+
+// valueStartsWith reports whether some occurrence of key is followed by ':'
+// and a value whose first byte is one of first. It is a heuristic
+// pre-filter; a positive result is always confirmed by a real decode.
+func valueStartsWith(p, key []byte, first ...byte) bool {
 	for {
 		i := bytes.Index(p, key)
 		if i < 0 {
@@ -200,7 +214,7 @@ func valueIsObject(p, key []byte) bool {
 		j := skipWS(p, 0)
 		if j < len(p) && p[j] == ':' {
 			j = skipWS(p, j+1)
-			if j < len(p) && p[j] == '{' {
+			if j < len(p) && bytes.IndexByte(first, p[j]) >= 0 {
 				return true
 			}
 		}

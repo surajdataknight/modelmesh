@@ -18,7 +18,7 @@ it, failures arrive in-band and are never retried.
 | No answer before `first_token` (streams) | Attempt cancelled (the provider sees the disconnect); fail over | failure | `TestFirstTokenTimeoutFailsOver` |
 | No answer before `attempt` (non-streaming) | Attempt cancelled; fail over | failure | (same code path as above) |
 | Stream ends or is cut before its first event | Fail over | failure | `TestPreCommitStreamFaultsFailOver` |
-| First event is invalid JSON, `[DONE]`, or an error object | Fail over | failure | `TestPreCommitStreamFaultsFailOver` |
+| First event is not a valid, non-empty JSON object (invalid JSON, `null`, `{}`), is `[DONE]`, or is an error | Fail over | failure | `TestPreCommitStreamFaultsFailOver`, `TestInspectChunk` |
 | Non-streaming body is cut off or invalid JSON | Fail over | failure | `TestNonStreamBrokenResponsesFailOver` |
 | 401 or 403 (bad provider credentials) | Logged at error level; fail over; client gets `502 upstream_auth_failed` if nothing else works | failure | — |
 | 404 (provider doesn't serve the model) | Fail over; `502 upstream_model_not_found` if nothing else works | ignored | — |
@@ -39,9 +39,9 @@ data: {"error":{"message":"upstream stream stalled","type":"timeout_error","para
 
 | Failure | `code` | Retried? | Upstream | Breaker | Test |
 |---|---|---|---|---|---|
-| No event for `timeouts.idle` | `upstream_stalled` | no | cancelled | failure | `TestMidStreamFaultsAreReportedInBandAndNotRetried/stall` |
+| No event for `timeouts.idle` (also right after the first event) | `upstream_stalled` | no | cancelled | failure | `TestMidStreamFaultsAreReportedInBandAndNotRetried/stall`, `TestEarlyStreamStallUsesIdleTimeout` |
 | Connection cut, or EOF without `[DONE]` | `upstream_interrupted` | no | closed | failure | `…/cut` |
-| Invalid JSON event | `upstream_malformed_response` | no | closed | failure | `…/malformed` |
+| Event that is not a valid, non-empty JSON object | `upstream_malformed_response` | no | closed | failure | `…/malformed`, `TestInspectChunk` |
 | Provider sends an `{"error":…}` event | the provider's event is forwarded as-is | no | closed | failure | — |
 | Event larger than `max_event_bytes` | `upstream_malformed_response` | no | closed | failure | (SSE unit tests) |
 | `timeouts.request` reached | `request_timeout` | no | cancelled | ignored | `TestRequestDeadlineEndsStreamInBand` |
